@@ -41,13 +41,25 @@ describe("Test POST /recommendations/:id/upvote", () => {
 
     expect(result.status).toBe(200);
   });
-  
+
   it("Should return 404 if voting for a recommendation that doesn't exist", async () => {
     const result = await supertest(app)
       .post(`/recommendations/${0}/upvote`)
       .send();
 
     expect(result.status).toBe(404);
+  });
+});
+
+describe("Test POST /recommendations/:id/downvote", () => {
+  it("Should return 200 if voting on the recommendation correctly if score is more than -5", async () => {
+    const createdMusic = await musicFactory();
+
+    const result = await supertest(app)
+      .post(`/recommendations/${createdMusic.id}/downvote`)
+      .send();
+
+    expect(result.status).toBe(200);
   });
 });
 
