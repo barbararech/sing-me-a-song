@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import app from "../../src/app";
-import  {prisma}  from "../../src/database";
+import { prisma } from "../../src/database";
 import musicFactory from "./factories/musicFactory";
 import musicDataFactory from "./factories/musicDataFactory";
 
@@ -32,12 +32,22 @@ describe("Test POST /recommendations", () => {
 });
 
 describe("Test POST /recommendations/:id/upvote", () => {
-  it("Should return 200 if post vote to recommendation correctly", async () => {
-   const createdMusic = await musicFactory();
+  it("Should return 200 if voting on the recommendation correctly", async () => {
+    const createdMusic = await musicFactory();
 
-    const result = await supertest(app).post(`/recommendations/${createdMusic.id}/upvote`).send();
+    const result = await supertest(app)
+      .post(`/recommendations/${createdMusic.id}/upvote`)
+      .send();
 
     expect(result.status).toBe(200);
+  });
+  
+  it("Should return 404 if voting for a recommendation that doesn't exist", async () => {
+    const result = await supertest(app)
+      .post(`/recommendations/${0}/upvote`)
+      .send();
+
+    expect(result.status).toBe(404);
   });
 });
 
