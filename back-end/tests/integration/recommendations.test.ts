@@ -83,6 +83,14 @@ describe("Test POST /recommendations/:id/downvote", () => {
     expect(result.status).toBe(200);
     expect(findMusic).toBeNull();
   });
+
+  it("Should return 404 if voting for a recommendation that doesn't exist", async () => {
+    const result = await supertest(app)
+      .post(`/recommendations/${0}/downvote`)
+      .send();
+
+    expect(result.status).toBe(404);
+  });
 });
 
 afterAll(async () => {
