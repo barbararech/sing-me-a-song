@@ -61,6 +61,28 @@ describe("Test POST /recommendations/:id/downvote", () => {
 
     expect(result.status).toBe(200);
   });
+
+  it("Should return 200 if voting on the recommendation correctly if score is less than -5", async () => {
+    const createdMusic = await musicFactory();
+
+    await prisma.recommendation.update({
+      where: { name: createdMusic.name },
+      data: {
+        score: -5,
+      },
+    });
+
+    const result = await supertest(app)
+      .post(`/recommendations/${createdMusic.id}/downvote`)
+      .send();
+
+    const findMusic = await prisma.recommendation.findFirst({
+      where: { name: createdMusic.name },
+    });
+
+    expect(result.status).toBe(200);
+    expect(findMusic).toBeNull();
+  });
 });
 
 afterAll(async () => {
