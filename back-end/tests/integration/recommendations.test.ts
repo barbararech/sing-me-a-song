@@ -120,6 +120,14 @@ describe("Test GET /recommendations/:id", () => {
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(createdMusic);
   });
+
+  it("Should return 404 if get a recommendation that doesn't exist", async () => {
+    const result = await supertest(app)
+    .get(`/recommendations/${0}`)
+    .send();
+
+    expect(result.status).toBe(404);
+  });
 });
 
 
