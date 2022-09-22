@@ -109,6 +109,20 @@ describe("Test GET /recommendations", () => {
   });
 });
 
+describe("Test GET /recommendations/:id", () => {
+  it("Should return 200 if get the recommendation correctly", async () => {
+    const createdMusic = await musicFactory();
+
+    const result = await supertest(app)
+      .get(`/recommendations/${createdMusic.id}`)
+      .send();
+
+    expect(result.status).toBe(200);
+    expect(result.body).toMatchObject(createdMusic);
+  });
+});
+
+
 afterAll(async () => {
   await prisma.$disconnect();
 });
