@@ -3,6 +3,8 @@ import app from "../../src/app";
 import { prisma } from "../../src/database";
 import musicFactory from "./factories/musicFactory";
 import musicDataFactory from "./factories/musicDataFactory";
+import musicListFactory from "./factories/musicListFactory";
+import isArraySorted from "./utils/isArraySorted";
 
 beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE "recommendations" RESTART IDENTITY`;
@@ -122,14 +124,26 @@ describe("Test GET /recommendations/:id", () => {
   });
 
   it("Should return 404 if get a recommendation that doesn't exist", async () => {
-    const result = await supertest(app)
-    .get(`/recommendations/${0}`)
-    .send();
+    const result = await supertest(app).get(`/recommendations/${0}`).send();
 
     expect(result.status).toBe(404);
   });
 });
 
+describe("Test GET /recommendations/top/:amount", () => {
+  it("Should return 200 if get recommendations correctly", async () => {
+    const amount = 20;
+    await musicListFactory();
+
+    const result = await supertest(app).get(`/recommendations/top/${amount}`);
+    const isResultArraySorted = isArraySorted(result.body);
+
+    expect(isResultArraySorted).toBe(true);
+    expect(result.body.length).toBeLessThanOrEqual(amount);
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Object);
+  });
+});
 
 afterAll(async () => {
   await prisma.$disconnect();
