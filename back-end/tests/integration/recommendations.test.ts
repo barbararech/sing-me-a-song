@@ -1,9 +1,9 @@
 import supertest from "supertest";
 import app from "../../src/app";
 import { prisma } from "../../src/database";
-import musicFactory from "./factories/musicFactory";
-import musicDataFactory from "./factories/musicDataFactory";
-import musicListFactory from "./factories/musicListFactory";
+import musicFactory from "./factories/recommendationFactory";
+import musicDataFactory from "./factories/recommendationDataFactory";
+import musicListFactory from "./factories/recommendationListFactory";
 import isArraySorted from "./utils/isArraySorted";
 
 beforeEach(async () => {

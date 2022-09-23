@@ -1,4 +1,4 @@
-import musicFactory from "../factories/musicFactory";
+import musicFactory from "./recommendationFactory";
 
 export default async function musicListFactory() {
   let count = 0;

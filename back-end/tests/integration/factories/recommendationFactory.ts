@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { prisma } from "../../../src/database";
-import musicDataFactory from "../factories/musicDataFactory";
+import musicDataFactory from "./recommendationDataFactory";
 
 export default async function musicFactory() {
   const music = await musicDataFactory();
