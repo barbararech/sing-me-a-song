@@ -177,4 +177,24 @@ describe("Test GET /recommendations/top/:amount", () => {
   });
 });
 
+describe("Test GET /recommendations/random", () => {
+  it("Should return 200 if get the recommendation with score greater than 10 correctly", async () => {
+    const musicList = await musicListFactory();
+    jest.spyOn(Math, "random").mockImplementationOnce(() => 0.4);
 
+    const recommendations = musicList.filter((el: any) => {
+      return el.score > 10;
+    });
+
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {
+        return recommendations;
+      });
+
+    const result = await recommendationService.getRandom();
+    console.log(result);
+    expect(result).toBeInstanceOf(Object);
+    expect(result.score).toBeGreaterThanOrEqual(10);
+  });
+});
