@@ -34,7 +34,10 @@ describe("Test POST /recommendations", () => {
     jest
       .spyOn(recommendationRepository, "findByName")
       .mockImplementationOnce((): any => {
-        return { name: recommendation.name, youtubeLink: recommendation.youtubeLink };
+        return {
+          name: recommendation.name,
+          youtubeLink: recommendation.youtubeLink,
+        };
       });
 
     const result = recommendationService.insert(recommendation);
@@ -143,7 +146,7 @@ describe("Test POST /recommendations/:id/downvote", () => {
 describe("Test GET /recommendations", () => {
   it("Should return 200 if get recommendations correctly", async () => {
     const recommendationList = await musicListFactory();
-    console.log(recommendationList)
+
     jest
       .spyOn(recommendationRepository, "findAll")
       .mockImplementationOnce((): any => {
@@ -193,7 +196,7 @@ describe("Test GET /recommendations/random", () => {
       });
 
     const result = await recommendationService.getRandom();
-    console.log(result);
+
     expect(result).toBeInstanceOf(Object);
     expect(result.score).toBeGreaterThanOrEqual(10);
   });
@@ -203,7 +206,7 @@ describe("Test GET /recommendations/random", () => {
     jest.spyOn(Math, "random").mockImplementationOnce(() => 0.8);
 
     const recommendations = musicList.filter((el: any) => {
-      return el.score <  10;
+      return el.score < 10;
     });
 
     jest
@@ -213,10 +216,17 @@ describe("Test GET /recommendations/random", () => {
       });
 
     const result = await recommendationService.getRandom();
-    console.log(result);
+
     expect(result).toBeInstanceOf(Object);
     expect(result.score).toBeLessThanOrEqual(10);
   });
 
- 
+  it("Should return not found error if recommendation doesn't exist", async () => {
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementation((): any => []);
+
+    const promise = recommendationService.getRandom();
+    expect(promise).rejects.toEqual(notFoundError());
+  });
 });
