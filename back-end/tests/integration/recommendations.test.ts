@@ -8,7 +8,7 @@ import recommendationListFactory from "./factories/recommendationListFactory";
 import isArraySorted from "./utils/isArraySorted";
 import updateRecommendationList from "./utils/updateRecommendationList";
 
-beforeEach(async () => {
+beforeAll(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE "recommendations" RESTART IDENTITY`;
 });
 
@@ -149,11 +149,10 @@ describe("Test GET /recommendations/top/:amount", () => {
 });
 
 describe("Test GET /recommendations/random", () => {
-  
   beforeEach(async () => {
     await prisma.$executeRaw`TRUNCATE TABLE "recommendations" RESTART IDENTITY`;
   });
-  
+
   it("Should return 200 if get the recommendation with score greater than 10 correctly", async () => {
     await recommendationListFactory();
     jest.spyOn(Math, "random").mockImplementationOnce(() => 0.4);
@@ -178,7 +177,7 @@ describe("Test GET /recommendations/random", () => {
 
   it("Should return any if only exist recommendation with score greater than 10", async () => {
     await recommendationListFactory();
-    updateRecommendationList(11)
+    updateRecommendationList(11);
 
     jest.spyOn(Math, "random").mockImplementationOnce(() => 0.8);
     const result = await supertest(app).get(`/recommendations/random`).send();
@@ -189,7 +188,7 @@ describe("Test GET /recommendations/random", () => {
 
   it("Should return any if only exist recommendation with score smaller than 10", async () => {
     await recommendationListFactory();
-    updateRecommendationList(1)
+    updateRecommendationList(1);
 
     jest.spyOn(Math, "random").mockImplementationOnce(() => 0.4);
     const result = await supertest(app).get(`/recommendations/random`).send();
