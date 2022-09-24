@@ -1,15 +1,15 @@
 import { jest } from "@jest/globals";
 import { recommendationService } from "../../src/services/recommendationsService";
 import { recommendationRepository } from "../../src/repositories/recommendationRepository";
-import createMusicDataFactory from "./factories/createRecommendationDataFactory";
-import musicDataFactory from "./factories/recommendationDataFactory";
-import musicListFactory from "./factories/recommendationListFactory";
+import createRecommendationDataFactory from "./factories/createRecommendationDataFactory";
+import recommendationDataFactory from "./factories/recommendationDataFactory";
+import recommendationListFactory from "./factories/recommendationListFactory";
 import { notFoundError } from "../../src/utils/errorUtils";
 import filterMusicList from "./utils/filterMusicList";
 
 describe("Test POST /recommendations", () => {
   it("Should return 200 if post recommendation correctly", async () => {
-    const recommendation = await createMusicDataFactory();
+    const recommendation = await createRecommendationDataFactory();
 
     jest
       .spyOn(recommendationRepository, "findByName")
@@ -24,7 +24,7 @@ describe("Test POST /recommendations", () => {
   });
 
   it("Should return 409 if registered a recommendation that already exists", async () => {
-    const recommendation = await createMusicDataFactory();
+    const recommendation = await createRecommendationDataFactory();
 
     jest
       .spyOn(recommendationRepository, "findByName")
@@ -45,7 +45,7 @@ describe("Test POST /recommendations", () => {
 
 describe("Test POST /recommendations/:id/upvote", () => {
   it("Should return 200 if voting on the recommendation correctly", async () => {
-    const recommendation = await musicDataFactory();
+    const recommendation = await recommendationDataFactory();
 
     jest
       .spyOn(recommendationRepository, "find")
@@ -63,7 +63,7 @@ describe("Test POST /recommendations/:id/upvote", () => {
   });
 
   it("Should return 404 if voting for a recommendation that doesn't exist", async () => {
-    const recommendation = await musicDataFactory();
+    const recommendation = await recommendationDataFactory();
 
     jest
       .spyOn(recommendationRepository, "find")
@@ -79,7 +79,7 @@ describe("Test POST /recommendations/:id/upvote", () => {
 
 describe("Test POST /recommendations/:id/downvote", () => {
   it("Should return 200 if voting on the recommendation with score greater than -5 correctly", async () => {
-    const recommendation = await musicDataFactory();
+    const recommendation = await recommendationDataFactory();
 
     jest
       .spyOn(recommendationRepository, "find")
@@ -99,7 +99,7 @@ describe("Test POST /recommendations/:id/downvote", () => {
   });
 
   it("Should return 200 if voting on the recommendation with score smaller than -5 correctly", async () => {
-    const recommendation = await musicDataFactory();
+    const recommendation = await recommendationDataFactory();
     recommendation.score = -6;
 
     jest
@@ -124,7 +124,7 @@ describe("Test POST /recommendations/:id/downvote", () => {
   });
 
   it("Should return 404 if voting for a recommendation that doesn't exist", async () => {
-    const recommendation = await musicDataFactory();
+    const recommendation = await recommendationDataFactory();
 
     jest
       .spyOn(recommendationRepository, "find")
@@ -140,7 +140,7 @@ describe("Test POST /recommendations/:id/downvote", () => {
 
 describe("Test GET /recommendations", () => {
   it("Should return 200 if get recommendations correctly", async () => {
-    const recommendationList = await musicListFactory();
+    const recommendationList = await recommendationListFactory();
 
     jest
       .spyOn(recommendationRepository, "findAll")
@@ -155,7 +155,7 @@ describe("Test GET /recommendations", () => {
 
 describe("Test GET /recommendations/top/:amount", () => {
   it("Should return 200 if get recommendations correctly", async () => {
-    const musicList = await musicListFactory();
+    const musicList = await recommendationListFactory();
     const amount = 3;
 
     const musicListSorted = musicList
@@ -177,7 +177,7 @@ describe("Test GET /recommendations/top/:amount", () => {
 
 describe("Test GET /recommendations/random", () => {
   it("Should return 200 if get the recommendation with score greater than 10 correctly", async () => {
-    const musicList = await musicListFactory();
+    const musicList = await recommendationListFactory();
     jest.spyOn(Math, "random").mockImplementationOnce(() => 0.4);
 
     const recommendations = musicList.filter((el: any) => {
@@ -193,7 +193,7 @@ describe("Test GET /recommendations/random", () => {
     const result = await recommendationService.getRandom();
 
     expect(result).toBeInstanceOf(Object);
-    expect(result.score).toBeGreaterThanOrEqual(10);
+    expect(result.score).toBeGreaterThan(10);
   });
 
   it("Should return 200 if get the recommendation with score smaller than 10 correctly", async () => {

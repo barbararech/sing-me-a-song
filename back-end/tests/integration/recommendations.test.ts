@@ -1,9 +1,10 @@
 import supertest from "supertest";
+import { jest } from "@jest/globals";
 import app from "../../src/app";
 import { prisma } from "../../src/database";
-import musicFactory from "./factories/recommendationFactory";
-import musicDataFactory from "./factories/recommendationDataFactory";
-import musicListFactory from "./factories/recommendationListFactory";
+import recommendationFactory from "./factories/recommendationFactory";
+import recommendationDataFactory from "./factories/recommendationDataFactory";
+import recommendationListFactory from "./factories/recommendationListFactory";
 import isArraySorted from "./utils/isArraySorted";
 
 beforeEach(async () => {
@@ -12,22 +13,26 @@ beforeEach(async () => {
 
 describe("Test POST /recommendations", () => {
   it("Should return 200 if post recommendation correctly", async () => {
-    const music = await musicDataFactory();
-    const result = await supertest(app).post(`/recommendations`).send(music);
+    const recommendation = await recommendationDataFactory();
+    const result = await supertest(app)
+      .post(`/recommendations`)
+      .send(recommendation);
 
-    const createdMusic = await prisma.recommendation.findFirst({
-      where: { name: music.name },
+    const createdRecommendation = await prisma.recommendation.findFirst({
+      where: { name: recommendation.name },
     });
 
     expect(result.status).toBe(201);
-    expect(createdMusic).toBeInstanceOf(Object);
+    expect(createdRecommendation).toBeInstanceOf(Object);
   });
 
   it("Should return 409 if registered a recommendation that already exists", async () => {
-    const music = await musicDataFactory();
+    const recommendation = await recommendationDataFactory();
 
-    await supertest(app).post(`/recommendations`).send(music);
-    const result = await supertest(app).post(`/recommendations`).send(music);
+    await supertest(app).post(`/recommendations`).send(recommendation);
+    const result = await supertest(app)
+      .post(`/recommendations`)
+      .send(recommendation);
 
     expect(result.status).toBe(409);
   });
@@ -35,10 +40,10 @@ describe("Test POST /recommendations", () => {
 
 describe("Test POST /recommendations/:id/upvote", () => {
   it("Should return 200 if voting on the recommendation correctly", async () => {
-    const createdMusic = await musicFactory();
+    const createdRecommendation = await recommendationFactory();
 
     const result = await supertest(app)
-      .post(`/recommendations/${createdMusic.id}/upvote`)
+      .post(`/recommendations/${createdRecommendation.id}/upvote`)
       .send();
 
     expect(result.status).toBe(200);
@@ -55,31 +60,31 @@ describe("Test POST /recommendations/:id/upvote", () => {
 
 describe("Test POST /recommendations/:id/downvote", () => {
   it("Should return 200 if voting on the recommendation correctly if score is more than -5", async () => {
-    const createdMusic = await musicFactory();
+    const createdRecommendation = await recommendationFactory();
 
     const result = await supertest(app)
-      .post(`/recommendations/${createdMusic.id}/downvote`)
+      .post(`/recommendations/${createdRecommendation.id}/downvote`)
       .send();
 
     expect(result.status).toBe(200);
   });
 
   it("Should return 200 if voting on the recommendation correctly if score is less than -5", async () => {
-    const createdMusic = await musicFactory();
+    const createdRecommendation = await recommendationFactory();
 
     await prisma.recommendation.update({
-      where: { name: createdMusic.name },
+      where: { name: createdRecommendation.name },
       data: {
         score: -5,
       },
     });
 
     const result = await supertest(app)
-      .post(`/recommendations/${createdMusic.id}/downvote`)
+      .post(`/recommendations/${createdRecommendation.id}/downvote`)
       .send();
 
     const findMusic = await prisma.recommendation.findFirst({
-      where: { name: createdMusic.name },
+      where: { name: createdRecommendation.name },
     });
 
     expect(result.status).toBe(200);
@@ -97,14 +102,11 @@ describe("Test POST /recommendations/:id/downvote", () => {
 
 describe("Test GET /recommendations", () => {
   it("Should return 200 if get recommendations correctly", async () => {
-    let count = 0;
-    while (count < 13) {
-      await musicFactory();
-      count++;
-    }
+    await recommendationListFactory();
 
     const result = await supertest(app).get(`/recommendations`);
     const resultLength = result.body.length;
+
     expect(result.status).toBe(200);
     expect(resultLength).toBeLessThan(11);
     expect(result.body).toBeInstanceOf(Object);
@@ -113,14 +115,14 @@ describe("Test GET /recommendations", () => {
 
 describe("Test GET /recommendations/:id", () => {
   it("Should return 200 if get the recommendation correctly", async () => {
-    const createdMusic = await musicFactory();
+    const createdRecommendation = await recommendationFactory();
 
     const result = await supertest(app)
-      .get(`/recommendations/${createdMusic.id}`)
+      .get(`/recommendations/${createdRecommendation.id}`)
       .send();
 
     expect(result.status).toBe(200);
-    expect(result.body).toMatchObject(createdMusic);
+    expect(result.body).toMatchObject(createdRecommendation);
   });
 
   it("Should return 404 if get a recommendation that doesn't exist", async () => {
@@ -133,7 +135,7 @@ describe("Test GET /recommendations/:id", () => {
 describe("Test GET /recommendations/top/:amount", () => {
   it("Should return 200 if get recommendations correctly", async () => {
     const amount = 20;
-    await musicListFactory();
+    await recommendationListFactory();
 
     const result = await supertest(app).get(`/recommendations/top/${amount}`);
     const isResultArraySorted = isArraySorted(result.body);
@@ -143,6 +145,21 @@ describe("Test GET /recommendations/top/:amount", () => {
     expect(result.status).toBe(200);
     expect(result.body).toBeInstanceOf(Object);
   });
+});
+
+describe("Test GET /recommendations/random", () => {
+  it("Should return 200 if get the recommendation with score greater than 10 correctly", async () => {
+    await recommendationListFactory();
+    jest.spyOn(Math, "random").mockImplementationOnce(() => 0.4);
+
+    const result = await supertest(app).get(`/recommendations/random`).send();
+
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Object);
+    expect(result.body.score).toBeGreaterThan(10);
+  });
+
+  
 });
 
 afterAll(async () => {

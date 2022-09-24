@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:integration": "dotenv -e .env.test prisma migrate dev && dotenv -e .env.test -- jest -i",
+    "test:integration": "dotenv -e .env.test prisma migrate dev && dotenv -e .env.test -- jest -i --testPathPattern=tests/integration",
     "test:unit": "dotenv -e .env.test jest -- -i --coverage --collectCoverageFrom=src/services/recommendationsService.ts --testPathPattern=tests/unit",
     "start": "node dist/src/server.js",
     "dev": "nodemon src/server.ts",

@@ -1,6 +1,6 @@
 import recommendationDataFactory from "./recommendationDataFactory";
 
-export default async function musicListFactory() {
+export default async function recommendationListFactory() {
   let count = 0;
   let musicList = [];
 
