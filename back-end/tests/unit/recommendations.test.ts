@@ -2,6 +2,7 @@ import { jest } from "@jest/globals";
 import { recommendationService } from "../../src/services/recommendationsService";
 import { recommendationRepository } from "../../src/repositories/recommendationRepository";
 import musicDataFactory from "./factories/recommendationDataFactory";
+import musicListFactory from "./factories/recommendationListFactory";
 
 describe("Test POST /recommendations", () => {
   it("Should return 200 if post recommendation correctly", async () => {
@@ -57,7 +58,7 @@ describe("Test POST /recommendations/:id/upvote", () => {
   });
 
   it("Should return 404 if voting for a recommendation that doesn't exist", async () => {
-    const music = await musicDataFactory();
+    await musicDataFactory();
     const id = 1;
 
     jest
@@ -106,6 +107,7 @@ describe("Test POST /recommendations/:id/downvote", () => {
 
     expect(recommendationRepository.updateScore).toBeCalled();
   });
+
   it("Should return 200 if voting on the recommendation with score smaller than -5 correctly", async () => {
     const music = await musicDataFactory();
     const updatedRecommendation = {
@@ -142,5 +144,35 @@ describe("Test POST /recommendations/:id/downvote", () => {
     await recommendationService.downvote(updatedRecommendation.id);
 
     expect(recommendationRepository.remove).toBeCalled();
+  });
+
+  it("Should return 404 if voting for a recommendation that doesn't exist", async () => {
+    await musicDataFactory();
+    const id = 1;
+
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => {});
+
+    const result = recommendationService.downvote(id);
+    expect(result).rejects.toEqual({
+      message: "",
+      type: "not_found",
+    });
+  });
+});
+
+describe("Test GET /recommendations", () => {
+  it("Should return 200 if get recommendations correctly", async () => {
+    const musicList = musicListFactory();
+    console.log(musicList);
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {
+        return musicList;
+      });
+
+    const result = recommendationService.get();
+    expect(result).toBeInstanceOf(Object);
   });
 });
