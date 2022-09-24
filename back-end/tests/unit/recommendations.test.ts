@@ -165,7 +165,6 @@ describe("Test POST /recommendations/:id/downvote", () => {
 describe("Test GET /recommendations", () => {
   it("Should return 200 if get recommendations correctly", async () => {
     const musicList = musicListFactory();
-    console.log(musicList);
     jest
       .spyOn(recommendationRepository, "findAll")
       .mockImplementationOnce((): any => {
@@ -173,6 +172,22 @@ describe("Test GET /recommendations", () => {
       });
 
     const result = recommendationService.get();
+    expect(result).toBeInstanceOf(Object);
+  });
+});
+
+describe("Test GET /recommendations/top/:amount", () => {
+  it("Should return 200 if get recommendations correctly", async () => {
+    const musicList = musicListFactory();
+    const amount = 3;
+
+    jest
+      .spyOn(recommendationRepository, "getAmountByScore")
+      .mockImplementationOnce((): any => {
+        return musicList;
+      });
+
+    const result = recommendationService.getTop(amount);
     expect(result).toBeInstanceOf(Object);
   });
 });
