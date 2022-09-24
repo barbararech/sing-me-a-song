@@ -169,6 +169,12 @@ describe("Test GET /recommendations/random", () => {
     expect(result.body).toBeInstanceOf(Object);
     expect(result.body.score).toBeLessThanOrEqual(10);
   });
+  
+  it("Should return 404 if get a recommendation that doesn't exist", async () => {
+    const result = await supertest(app).get(`/recommendations/random`).send();
+
+    expect(result.status).toBe(404);
+  });
 });
 
 afterAll(async () => {
