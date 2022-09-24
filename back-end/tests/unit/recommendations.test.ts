@@ -106,4 +106,41 @@ describe("Test POST /recommendations/:id/downvote", () => {
 
     expect(recommendationRepository.updateScore).toBeCalled();
   });
+  it("Should return 200 if voting on the recommendation with score smaller than -5 correctly", async () => {
+    const music = await musicDataFactory();
+    const updatedRecommendation = {
+      id: 1,
+      score: -6,
+    };
+
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => {
+        return {
+          id: updatedRecommendation.id,
+          name: music.name,
+          youtubeLink: music.youtubeLink,
+          score: updatedRecommendation.score,
+        };
+      });
+
+    jest
+      .spyOn(recommendationRepository, "updateScore")
+      .mockImplementationOnce((): any => {
+        return {
+          id: updatedRecommendation.id,
+          name: music.name,
+          youtubeLink: music.youtubeLink,
+          score: updatedRecommendation.score,
+        };
+      });
+
+    jest
+      .spyOn(recommendationRepository, "remove")
+      .mockImplementationOnce((): any => {});
+
+    await recommendationService.downvote(updatedRecommendation.id);
+
+    expect(recommendationRepository.remove).toBeCalled();
+  });
 });
