@@ -5,12 +5,7 @@ import createMusicDataFactory from "./factories/createRecommendationDataFactory"
 import musicDataFactory from "./factories/recommendationDataFactory";
 import musicListFactory from "./factories/recommendationListFactory";
 import { notFoundError } from "../../src/utils/errorUtils";
-import { prisma } from "../../src/database";
-
-// beforeEach(() => {
-//   jest.resetAllMocks();
-//   jest.clearAllMocks();
-// });
+import filterMusicList from "./utils/filterMusicList";
 
 describe("Test POST /recommendations", () => {
   it("Should return 200 if post recommendation correctly", async () => {
@@ -202,12 +197,8 @@ describe("Test GET /recommendations/random", () => {
   });
 
   it("Should return 200 if get the recommendation with score smaller than 10 correctly", async () => {
-    const musicList = await musicListFactory();
+    const recommendations = filterMusicList();
     jest.spyOn(Math, "random").mockImplementationOnce(() => 0.8);
-
-    const recommendations = musicList.filter((el: any) => {
-      return el.score < 10;
-    });
 
     jest
       .spyOn(recommendationRepository, "findAll")
