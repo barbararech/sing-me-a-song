@@ -12,6 +12,7 @@ export default async function musicListFactory() {
       youtubeLink: `https://youtu.be/${fakerString}`,
       score: faker.datatype.number({ min: -5, max: 300 }),
     };
+
     musicList.push(music);
     count++;
   }
