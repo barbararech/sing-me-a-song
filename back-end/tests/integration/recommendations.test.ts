@@ -8,7 +8,7 @@ import recommendationListFactory from "./factories/recommendationListFactory";
 import isArraySorted from "./utils/isArraySorted";
 import updateRecommendationList from "./utils/updateRecommendationList";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE "recommendations" RESTART IDENTITY`;
 });
 
@@ -149,10 +149,6 @@ describe("Test GET /recommendations/top/:amount", () => {
 });
 
 describe("Test GET /recommendations/random", () => {
-  beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE TABLE "recommendations" RESTART IDENTITY`;
-  });
-
   it("Should return 200 if get the recommendation with score greater than 10 correctly", async () => {
     await recommendationListFactory();
     jest.spyOn(Math, "random").mockImplementationOnce(() => 0.4);
