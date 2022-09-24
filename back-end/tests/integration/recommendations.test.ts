@@ -6,6 +6,7 @@ import recommendationFactory from "./factories/recommendationFactory";
 import recommendationDataFactory from "./factories/recommendationDataFactory";
 import recommendationListFactory from "./factories/recommendationListFactory";
 import isArraySorted from "./utils/isArraySorted";
+import updateRecommendationList from "./utils/updateRecommendationList";
 
 beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE "recommendations" RESTART IDENTITY`;
@@ -169,7 +170,18 @@ describe("Test GET /recommendations/random", () => {
     expect(result.body).toBeInstanceOf(Object);
     expect(result.body.score).toBeLessThanOrEqual(10);
   });
-  
+
+  it("Should return any if only exist recommendation with score greater than 10", async () => {
+    await recommendationListFactory();
+    updateRecommendationList(11)
+    
+    jest.spyOn(Math, "random").mockImplementationOnce(() => 0.8);
+    const result = await supertest(app).get(`/recommendations/random`).send();
+
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Object);
+  });
+
   it("Should return 404 if get a recommendation that doesn't exist", async () => {
     const result = await supertest(app).get(`/recommendations/random`).send();
 
