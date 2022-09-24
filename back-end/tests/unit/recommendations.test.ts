@@ -4,7 +4,7 @@ import { recommendationRepository } from "../../src/repositories/recommendationR
 import musicDataFactory from "./factories/recommendationDataFactory";
 
 describe("Test POST /recommendations", () => {
-  it("Should return 200 if post recommendation correctl", async () => {
+  it("Should return 200 if post recommendation correctly", async () => {
     const music = await musicDataFactory();
 
     jest
@@ -16,7 +16,7 @@ describe("Test POST /recommendations", () => {
       .mockImplementationOnce((): any => {});
 
     await recommendationService.insert(music);
-    expect(recommendationRepository.findByName).toBeCalled();
+    expect(recommendationRepository.create).toBeCalled();
   });
 
   it("Should return 409 if registered a recommendation that already exists", async () => {
@@ -33,5 +33,26 @@ describe("Test POST /recommendations", () => {
       message: "Recommendations names must be unique",
       type: "conflict",
     });
+  });
+});
+
+describe("Test POST /recommendations/:id/upvote", () => {
+  it("Should return 200 if voting on the recommendation correctly", async () => {
+    const music = await musicDataFactory();
+    const id = 1;
+
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => {
+        return { id, name: music.name, youtubeLink: music.youtubeLink };
+      });
+
+    jest
+      .spyOn(recommendationRepository, "updateScore")
+      .mockImplementationOnce((): any => {});
+
+    await recommendationService.upvote(id);
+
+    expect(recommendationRepository.updateScore).toBeCalled();
   });
 });
