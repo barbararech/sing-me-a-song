@@ -197,4 +197,26 @@ describe("Test GET /recommendations/random", () => {
     expect(result).toBeInstanceOf(Object);
     expect(result.score).toBeGreaterThanOrEqual(10);
   });
+
+  it("Should return 200 if get the recommendation with score smaller than 10 correctly", async () => {
+    const musicList = await musicListFactory();
+    jest.spyOn(Math, "random").mockImplementationOnce(() => 0.8);
+
+    const recommendations = musicList.filter((el: any) => {
+      return el.score <  10;
+    });
+
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {
+        return recommendations;
+      });
+
+    const result = await recommendationService.getRandom();
+    console.log(result);
+    expect(result).toBeInstanceOf(Object);
+    expect(result.score).toBeLessThanOrEqual(10);
+  });
+
+ 
 });
