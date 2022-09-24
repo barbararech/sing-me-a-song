@@ -159,7 +159,16 @@ describe("Test GET /recommendations/random", () => {
     expect(result.body.score).toBeGreaterThan(10);
   });
 
-  
+  it("Should return 200 if get the recommendation with score smaller than 10 correctly", async () => {
+    await recommendationListFactory();
+    jest.spyOn(Math, "random").mockImplementationOnce(() => 0.8);
+
+    const result = await supertest(app).get(`/recommendations/random`).send();
+
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Object);
+    expect(result.body.score).toBeLessThanOrEqual(10);
+  });
 });
 
 afterAll(async () => {
