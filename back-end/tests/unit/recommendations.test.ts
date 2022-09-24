@@ -55,4 +55,19 @@ describe("Test POST /recommendations/:id/upvote", () => {
 
     expect(recommendationRepository.updateScore).toBeCalled();
   });
+
+  it("Should return 404 if voting for a recommendation that doesn't exist", async () => {
+    const music = await musicDataFactory();
+    const id = 1;
+
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => {});
+
+    const result = recommendationService.upvote(id);
+    expect(result).rejects.toEqual({
+      message: "",
+      type: "not_found",
+    });
+  });
 });
