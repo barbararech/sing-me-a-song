@@ -71,3 +71,39 @@ describe("Test POST /recommendations/:id/upvote", () => {
     });
   });
 });
+
+describe("Test POST /recommendations/:id/downvote", () => {
+  it("Should return 200 if voting on the recommendation with score greater than -5 correctly", async () => {
+    const music = await musicDataFactory();
+    const updatedRecommendation = {
+      id: 1,
+      score: 10,
+    };
+
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => {
+        return {
+          id: updatedRecommendation.id,
+          name: music.name,
+          youtubeLink: music.youtubeLink,
+          score: updatedRecommendation.score,
+        };
+      });
+
+    jest
+      .spyOn(recommendationRepository, "updateScore")
+      .mockImplementationOnce((): any => {
+        return {
+          id: updatedRecommendation.id,
+          name: music.name,
+          youtubeLink: music.youtubeLink,
+          score: updatedRecommendation.score,
+        };
+      });
+
+    await recommendationService.downvote(updatedRecommendation.id);
+
+    expect(recommendationRepository.updateScore).toBeCalled();
+  });
+});
