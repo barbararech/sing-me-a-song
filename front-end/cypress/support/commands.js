@@ -26,25 +26,22 @@
 
 Cypress.Commands.add("createRecommendation", (recommendation) => {
   cy.visit("http://localhost:3000/");
-  cy.log(recommendation)
+  cy.log(recommendation);
 
   cy.get('input[placeholder="Name"]').type(recommendation.name);
   cy.get('input[placeholder="https://youtu.be/..."]').type(
     recommendation.youtubeLink
   );
 
-  cy.intercept("POST", "http://localhost:4000/recommendations/").as(
-    "createRecommendation"
-  );
+  cy.intercept("POST", "/recommendations").as("createRecommendation");
 
   cy.get("button").click();
 
   cy.wait("@createRecommendation");
 });
 
-
 // Cypress.Commands.add("resetDatabase", () => {
-//   cy.request("POST", "http://localhost:5000/recommendations/e2e/reset");
+//   cy.request("POST", "http://localhost:4000/recommendations/e2e/reset");
 // });
 
 // // cypress/integration/fooBar.spec.js
