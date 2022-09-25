@@ -41,11 +41,7 @@ Cypress.Commands.add("createRecommendation", (recommendation) => {
 });
 
 // Cypress.Commands.add("resetDatabase", () => {
-//   cy.request("POST", "http://localhost:4000/recommendations/e2e/reset");
+ 
 // });
 
-// // cypress/integration/fooBar.spec.js
 
-// beforeEach(() => {
-//   cy.resetDatabase();
-// });
