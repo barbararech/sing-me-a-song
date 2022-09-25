@@ -49,7 +49,11 @@ export default function Recommendation({
       <Row>
         <GoArrowUp size="24px" onClick={handleUpvote} data-test-id="upvote" />
         <span data-test-id="score">{score}</span>
-        <GoArrowDown size="24px" onClick={handleDownvote} />
+        <GoArrowDown
+          size="24px"
+          onClick={handleDownvote}
+          data-test-id="downvote"
+        />
       </Row>
     </Container>
   );

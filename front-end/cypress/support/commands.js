@@ -54,6 +54,32 @@ Cypress.Commands.add("upvoteRecommendation", (recommendation) => {
   });
 });
 
+Cypress.Commands.add("downvoteRecommendation", (recommendation) => {
+  cy.visit("http://localhost:3000/");
+
+  cy.request(
+    "POST",
+    "http://localhost:4000/recommendations",
+    recommendation
+  ).then(() => {
+    cy.request(
+      "GET",
+      `http://localhost:4000/e2e/recommendations/${recommendation.name}`
+    ).then((res) => {
+      cy.log(res.body);
+      cy.intercept("POST", `/recommendations/${res.body.id}/downvote`).as(
+        "downvoteRecommendation"
+      );
+
+      cy.get('[data-test-id="downvote"]').click();
+
+      cy.wait("@downvoteRecommendation");
+
+      cy.wrap(res.body.score);
+    });
+  });
+});
+
 Cypress.Commands.add("resetDatabase", () => {
   cy.request("POST", "http://localhost:4000/e2e/reset", {});
 });
