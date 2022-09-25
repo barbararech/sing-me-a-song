@@ -7,22 +7,6 @@
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add("createRecommendation", (recommendation) => {
   cy.visit("http://localhost:3000/");
@@ -40,8 +24,8 @@ Cypress.Commands.add("createRecommendation", (recommendation) => {
   cy.wait("@createRecommendation");
 });
 
-// Cypress.Commands.add("resetDatabase", () => {
- 
-// });
+Cypress.Commands.add("resetDatabase", () => {
+  cy.request("POST", "http://localhost:4000/e2e/reset", {});
+});
 
 
