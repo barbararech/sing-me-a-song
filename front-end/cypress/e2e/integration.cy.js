@@ -35,3 +35,9 @@ describe("Downvote recommendation", () => {
     });
   });
 });
+
+describe("View home", () => {
+  it("tests if it's showing the right amount of recommendations", () => {
+    cy.viewRecommendations();
+  });
+});
