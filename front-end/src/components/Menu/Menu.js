@@ -20,12 +20,12 @@ export default function Menu() {
         Top
       </MenuItem>
 
-      <MenuItem onClick={() => navigate("/random")}>
+      <MenuItem data-test-id="random" onClick={() => navigate("/random")}>
         <FiShuffle />
         Random
       </MenuItem>
     </StyledMenu>
-  )
+  );
 }
 
 const StyledMenu = styled.div`

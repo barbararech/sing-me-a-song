@@ -41,3 +41,9 @@ describe("View home", () => {
     cy.viewRecommendations();
   });
 });
+
+describe("View random", () => {
+  it("tests if it's showing the right amount of recommendations in the 'random' tab", () => {
+    cy.viewRandom();
+  });
+});
