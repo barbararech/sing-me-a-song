@@ -22,9 +22,16 @@ describe("Downvote recommendation", () => {
   it("tests if it downvote a recommendation correctly if score is greater than -5", () => {
     const recommendation = createRecommendationDataFactory();
 
-    cy.downvoteRecommendation(recommendation).then((el) => {
-      cy.log(el)
-       cy.get('[data-test-id="score"]').should("contain.text", `${el + 1}`);
+    cy.downvoteRecommendation(recommendation, "greater").then((el) => {
+      cy.get('[data-test-id="score"]').should("contain.text", `${el + 1}`);
+    });
+  });
+
+  it("tests if it downvote a recommendation correctly if score is greater than -5", () => {
+    const recommendation = createRecommendationDataFactory();
+
+    cy.downvoteRecommendation(recommendation, "less").then(() => {
+      cy.contains('[data-test-id="score"]').should("not.exist");
     });
   });
 });
