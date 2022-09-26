@@ -47,3 +47,9 @@ describe("View random", () => {
     cy.viewRandom();
   });
 });
+
+describe("View top", () => {
+  it("tests if it's showing the right amount of recommendations in the 'top' tab", () => {
+    cy.viewTop();
+  });
+});
