@@ -8,8 +8,16 @@ async function reset(req: Request, res: Response) {
 
 async function findByName(req: Request, res: Response) {
   const name = req.params.name;
- const recommendation =  await e2eService.getByName(name);
-  res.send(recommendation)
+  const recommendation = await e2eService.getByName(name);
+  res.send(recommendation);
 }
 
-export { reset, findByName };
+async function updateScore(req: Request, res: Response) {
+  const { name, score } = req.body;
+  const numberScore = parseInt(score);
+
+  await e2eService.updateScore(name, numberScore);
+  res.sendStatus(200);
+}
+
+export { reset, findByName, updateScore };

@@ -7,3 +7,8 @@ export async function truncate() {
 export async function getByName(name: string) {
   return await e2eRepository.findByName(name);
 }
+
+
+export async function updateScore(name: string, score: number) {
+  return await e2eRepository.updateScore(name, score)
+}

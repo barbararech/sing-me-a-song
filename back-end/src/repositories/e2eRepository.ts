@@ -9,3 +9,12 @@ export function findByName(name: string) {
     where: { name },
   });
 }
+
+export function updateScore(name: string, score: number) {
+  return prisma.recommendation.update({
+    where: { name },
+    data: {
+      score,
+    },
+  });
+}
