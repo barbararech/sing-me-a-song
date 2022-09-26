@@ -15,7 +15,7 @@
 An app for you to share music recommendations, as well as being able to vote on the recommendation of others!
 
 
-## 🏁 Running the application
+## 🏁 Configuring the application
 
 This project was initialized with [Create React App](https://github.com/facebook/create-react-app), so make 
 sure you have the latest stable version of [Node.js](https://nodejs.org/en/download/) and [npm](https://www.npmjs.com/) running locally.
@@ -53,3 +53,49 @@ npm install
 ```
 
 :stop_sign: Don't forget to set the environment variables!
+
+## 🏁 Running the tests
+
+### For the integration test
+
+Inside the back-end folder, run the following command to start the tests.
+
+```
+npm run test:integration
+```
+### For the unit test
+
+Inside the back-end folder, run the following command to start the tests.
+
+```
+npm run test:unit
+```
+
+### For the e2e test
+
+Inside the back-end folder, run the following command to run the server.
+
+```
+npm run dev
+```
+
+Inside the front-end folder, run the following command to run the app.
+
+```
+npm start
+```
+
+Inside the front-end folder, run the following command to start the tests.
+
+```
+npx cypress open
+```
+
+
+
+
+
+
+
+
+
